@@ -1,0 +1,81 @@
+[info] welcome to sbt 1.9.9 (Homebrew Java 17.0.21.0.3)
+[info] loading project definition from /Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/project
+[info] loading settings for project flightnetworkanalysis from build.sbt ...
+[info] set current project to FlightNetworkAnalysis (in build file:/Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/)
+[info] running (fork) flightnetwork.FlightNetworkAnalysis 
+[error] Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+[error] 26/11/12 12:13:03 WARN Utils: Your hostname, TANISHAs-MacBook-Air.local resolves to a loopback address: 127.0.0.1; using 10.107.13.243 instead (on interface en0)
+[error] 26/11/12 12:13:03 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+[error] 26/11/12 12:13:03 INFO SparkContext: Running Spark version 3.5.1
+[error] 26/11/12 12:13:03 INFO SparkContext: OS info Mac OS X, 27.2, aarch64
+[error] 26/11/12 12:13:03 INFO SparkContext: Java version 17.0.21.0.3
+[error] 26/11/12 12:13:03 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[error] 26/11/12 12:13:03 INFO ResourceUtils: ==============================================================
+[error] 26/11/12 12:13:03 INFO ResourceUtils: No custom resources configured for spark.driver.
+[error] 26/11/12 12:13:03 INFO ResourceUtils: ==============================================================
+[error] 26/11/12 12:13:03 INFO SparkContext: Submitted application: FlightNetworkAnalysis
+[error] 26/11/12 12:13:03 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+[error] 26/11/12 12:13:03 INFO ResourceProfile: Limiting resource is cpu
+[error] 26/11/12 12:13:03 INFO ResourceProfileManager: Added ResourceProfile id: 0
+[error] 26/11/12 12:13:03 INFO SecurityManager: Changing view acls to: tanishaparida
+[error] 26/11/12 12:13:03 INFO SecurityManager: Changing modify acls to: tanishaparida
+[error] 26/11/12 12:13:03 INFO SecurityManager: Changing view acls groups to: 
+[error] 26/11/12 12:13:03 INFO SecurityManager: Changing modify acls groups to: 
+[error] 26/11/12 12:13:03 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: tanishaparida; groups with view permissions: EMPTY; users with modify permissions: tanishaparida; groups with modify permissions: EMPTY
+[error] 26/11/12 12:13:03 INFO Utils: Successfully started service 'sparkDriver' on port 50907.
+[error] 26/11/12 12:13:03 INFO SparkEnv: Registering MapOutputTracker
+[error] 26/11/12 12:13:03 INFO SparkEnv: Registering BlockManagerMaster
+[error] 26/11/12 12:13:03 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+[error] 26/11/12 12:13:03 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+[error] 26/11/12 12:13:03 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+[error] 26/11/12 12:13:03 INFO DiskBlockManager: Created local directory at /private/var/folders/ct/z72j5mp12yn21fsc5ybvx9nr0000gn/T/blockmgr-921c331a-8623-4d1b-aea5-0b89be2cb75a
+[error] 26/11/12 12:13:03 INFO MemoryStore: MemoryStore started with capacity 2.2 GiB
+[error] 26/11/12 12:13:03 INFO SparkEnv: Registering OutputCommitCoordinator
+[error] 26/11/12 12:13:03 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+[error] 26/11/12 12:13:04 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+[error] 26/11/12 12:13:04 INFO Executor: Starting executor ID driver on host 10.107.13.243
+[error] 26/11/12 12:13:04 INFO Executor: OS info Mac OS X, 27.2, aarch64
+[error] 26/11/12 12:13:04 INFO Executor: Java version 17.0.21.0.3
+[error] 26/11/12 12:13:04 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+[error] 26/11/12 12:13:04 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@56637cff for default.
+[error] 26/11/12 12:13:04 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 50908.
+[error] 26/11/12 12:13:04 INFO NettyBlockTransferService: Server created on 10.107.13.243:50908
+[error] 26/11/12 12:13:04 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+[error] 26/11/12 12:13:04 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 10.107.13.243, 50908, None)
+[error] 26/11/12 12:13:04 INFO BlockManagerMasterEndpoint: Registering block manager 10.107.13.243:50908 with 2.2 GiB RAM, BlockManagerId(driver, 10.107.13.243, 50908, None)
+[error] 26/11/12 12:13:04 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 10.107.13.243, 50908, None)
+[error] 26/11/12 12:13:04 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 10.107.13.243, 50908, None)
+[info] Running FlightNetworkAnalysis with input: data/flights.csv
+[info] =================================================================
+[info]               FLIGHT NETWORK ANALYSIS REPORT
+[info] =================================================================
+[info] [Graph Summary]
+[info]   Total Airports (Vertices) : 8
+[info]   Total Flight Routes (Edges): 12
+[info] [Degree Ranking (In-Degree + Out-Degree)]
+[info]   Rank   Airport Name       Total Degree
+[info]   --------------------------------------
+[info]   1      DELHI                         5
+[info]   2      MUMBAI                        5
+[info]   3      BENGALURU                     3
+[info]   4      HYDERABAD                     3
+[info]   5      AHMEDABAD                     2
+[info]   6      CHENNAI                       2
+[info]   7      GOA                           2
+[info]   8      KOLKATA                       2
+[info] [PageRank Ranking (Tolerance = 0.0001)]
+[info]   Rank   Airport Name         PageRank Score
+[info]   ------------------------------------------
+[info]   1      DELHI                      1.833855
+[info]   2      HYDERABAD                  1.444148
+[info]   3      KOLKATA                    1.377523
+[info]   4      MUMBAI                     1.057017
+[info]   5      CHENNAI                    0.994079
+[info]   6      BENGALURU                  0.993238
+[info]   7      AHMEDABAD                  0.150070
+[info]   8      GOA                        0.150070
+[info] [Connected Components (Undirected)]
+[info]   Total Components Discovered: 1
+[info]   Component 1 (Representative ID 0): [AHMEDABAD, BENGALURU, CHENNAI, DELHI, GOA, HYDERABAD, KOLKATA, MUMBAI]
+[info] =================================================================
+[success] Total time: 13 s, completed 12-Nov-2026, 12:13:13 pm

@@ -1,0 +1,69 @@
+[info] welcome to sbt 1.9.9 (Homebrew Java 17.0.21.0.3)
+[info] loading project definition from /Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/project
+[info] loading settings for project flightnetworkanalysis from build.sbt ...
+[info] set current project to FlightNetworkAnalysis (in build file:/Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/)
+[info] FlightNetworkAnalysisSpec:
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/11/12 12:13:19 WARN Utils: Your hostname, TANISHAs-MacBook-Air.local resolves to a loopback address: 127.0.0.1; using 10.107.13.243 instead (on interface en0)
+26/11/12 12:13:19 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/11/12 12:13:19 INFO SparkContext: Running Spark version 3.5.1
+26/11/12 12:13:19 INFO SparkContext: OS info Mac OS X, 27.2, aarch64
+26/11/12 12:13:19 INFO SparkContext: Java version 17.0.21.0.3
+26/11/12 12:13:19 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/11/12 12:13:19 INFO ResourceUtils: ==============================================================
+26/11/12 12:13:19 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/11/12 12:13:19 INFO ResourceUtils: ==============================================================
+26/11/12 12:13:19 INFO SparkContext: Submitted application: FlightNetworkAnalysisSpec
+26/11/12 12:13:19 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/11/12 12:13:19 INFO ResourceProfile: Limiting resource is cpu
+26/11/12 12:13:19 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/11/12 12:13:19 INFO SecurityManager: Changing view acls to: tanishaparida
+26/11/12 12:13:19 INFO SecurityManager: Changing modify acls to: tanishaparida
+26/11/12 12:13:19 INFO SecurityManager: Changing view acls groups to: 
+26/11/12 12:13:19 INFO SecurityManager: Changing modify acls groups to: 
+26/11/12 12:13:19 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: tanishaparida; groups with view permissions: EMPTY; users with modify permissions: tanishaparida; groups with modify permissions: EMPTY
+26/11/12 12:13:19 INFO Utils: Successfully started service 'sparkDriver' on port 50913.
+26/11/12 12:13:19 INFO SparkEnv: Registering MapOutputTracker
+26/11/12 12:13:19 INFO SparkEnv: Registering BlockManagerMaster
+26/11/12 12:13:19 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/11/12 12:13:19 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/11/12 12:13:19 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/11/12 12:13:19 INFO DiskBlockManager: Created local directory at /private/var/folders/ct/z72j5mp12yn21fsc5ybvx9nr0000gn/T/blockmgr-d3b00124-22a0-4655-9dd8-09b4317fcd3b
+26/11/12 12:13:19 INFO MemoryStore: MemoryStore started with capacity 2.2 GiB
+26/11/12 12:13:19 INFO SparkEnv: Registering OutputCommitCoordinator
+26/11/12 12:13:19 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/11/12 12:13:19 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/11/12 12:13:19 INFO Executor: Starting executor ID driver on host 10.107.13.243
+26/11/12 12:13:19 INFO Executor: OS info Mac OS X, 27.2, aarch64
+26/11/12 12:13:19 INFO Executor: Java version 17.0.21.0.3
+26/11/12 12:13:19 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/11/12 12:13:19 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@329df1ba for default.
+26/11/12 12:13:19 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 50914.
+26/11/12 12:13:19 INFO NettyBlockTransferService: Server created on localhost:50914
+26/11/12 12:13:19 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/11/12 12:13:19 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, localhost, 50914, None)
+26/11/12 12:13:19 INFO BlockManagerMasterEndpoint: Registering block manager localhost:50914 with 2.2 GiB RAM, BlockManagerId(driver, localhost, 50914, None)
+26/11/12 12:13:19 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, localhost, 50914, None)
+26/11/12 12:13:19 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, localhost, 50914, None)
+[WARN] Skipping malformed line (fewer than 3 fields): 'DELHI,MUMBAI'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,not_a_number'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,12.5'
+[info] - FR-02: parseLine properly parses valid rows, ignores headers and blank lines, and skips non-numeric rows
+[WARN] Skipping malformed line (fewer than 3 fields): 'SHORT_ROW'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,INVALID_COUNT'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,INVALID_COUNT'
+[WARN] Skipping malformed line (fewer than 3 fields): 'SHORT_ROW'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,INVALID_COUNT'
+[WARN] Skipping malformed line (fewer than 3 fields): 'SHORT_ROW'
+[WARN] Skipping malformed line (fewer than 3 fields): 'SHORT_ROW'
+[WARN] Skipping row with non-numeric flight count: 'DELHI,MUMBAI,INVALID_COUNT'
+[info] - FR-02 & FR-04: Header, blank lines, and non-numeric rows create no vertices or edges
+[info] - FR-06 & FR-08: On data/sample3.csv, degrees must be DELHI=2, MUMBAI=2, BENGALURU=1, HYDERABAD=1 and form ONE connected component
+[info] - FR-03, FR-04, FR-05: Vertex count equals unique airports; edge count equals valid rows on data/flights.csv
+[info] - Design Decision: Duplicate routes between the same airports are kept as separate edges
+[info] Run completed in 3 seconds, 879 milliseconds.
+[info] Total number of tests run: 5
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 5, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 6 s, completed 12-Nov-2026, 12:13:22 pm
