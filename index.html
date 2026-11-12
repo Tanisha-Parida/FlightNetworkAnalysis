@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flight Network Analysis: Prototype Results</title>
+  <title>Flight Network Analysis: Interactive GraphX Console</title>
   <script>
     (function() {
       try {
@@ -29,6 +29,9 @@
       --bar-bg: rgba(255, 255, 255, 0.08);
       --warning-bg: rgba(255, 183, 3, 0.12);
       --warning-border: rgba(255, 183, 3, 0.4);
+      --error-bg: rgba(248, 113, 113, 0.12);
+      --error-border: rgba(248, 113, 113, 0.4);
+      --error-text: #f87171;
       --badge-pass-color: #3fb950;
       --badge-pass-bg: rgba(46, 160, 67, 0.15);
       --badge-pass-border: rgba(46, 160, 67, 0.4);
@@ -52,6 +55,9 @@
         --bar-bg: rgba(0, 0, 0, 0.06);
         --warning-bg: rgba(178, 106, 0, 0.1);
         --warning-border: rgba(178, 106, 0, 0.35);
+        --error-bg: rgba(207, 34, 46, 0.1);
+        --error-border: rgba(207, 34, 46, 0.35);
+        --error-text: #cf222e;
         --badge-pass-color: #1a7f37;
         --badge-pass-bg: rgba(46, 160, 67, 0.12);
         --badge-pass-border: rgba(46, 160, 67, 0.3);
@@ -75,6 +81,9 @@
       --bar-bg: rgba(0, 0, 0, 0.06);
       --warning-bg: rgba(178, 106, 0, 0.1);
       --warning-border: rgba(178, 106, 0, 0.35);
+      --error-bg: rgba(207, 34, 46, 0.1);
+      --error-border: rgba(207, 34, 46, 0.35);
+      --error-text: #cf222e;
       --badge-pass-color: #1a7f37;
       --badge-pass-bg: rgba(46, 160, 67, 0.12);
       --badge-pass-border: rgba(46, 160, 67, 0.3);
@@ -97,6 +106,9 @@
       --bar-bg: rgba(255, 255, 255, 0.08);
       --warning-bg: rgba(255, 183, 3, 0.12);
       --warning-border: rgba(255, 183, 3, 0.4);
+      --error-bg: rgba(248, 113, 113, 0.12);
+      --error-border: rgba(248, 113, 113, 0.4);
+      --error-text: #f87171;
       --badge-pass-color: #3fb950;
       --badge-pass-bg: rgba(46, 160, 67, 0.15);
       --badge-pass-border: rgba(46, 160, 67, 0.4);
@@ -105,49 +117,42 @@
       --btn-sec-border: var(--border);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       background-color: var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       line-height: 1.5;
-      overflow-x: hidden;
       width: 100%;
+      overflow-x: hidden;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .container {
       width: 100%;
-      max-width: 820px;
+      max-width: 860px;
       margin: 0 auto;
       padding: 1.25rem 1rem;
     }
 
-    /* a. Header */
     header {
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 1rem;
+      padding-bottom: 0.85rem;
     }
 
     .header-top {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     h1 {
       font-size: 1.35rem;
       font-weight: 700;
       color: var(--text);
-      line-height: 1.25;
     }
 
     .header-actions {
@@ -165,7 +170,7 @@
       border: 1px solid var(--badge-pass-border);
       padding: 0.3rem 0.65rem;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -180,23 +185,11 @@
       background: var(--btn-sec-bg);
       color: var(--btn-sec-color);
       transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       min-width: 60px;
     }
-
     .btn-theme:hover {
       opacity: 0.85;
       border-color: var(--accent);
-    }
-
-    /* b. Summary Cards */
-    .grid-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
     }
 
     .card {
@@ -204,51 +197,135 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1rem;
+      margin-bottom: 1.25rem;
       transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .stat-label {
-      font-size: 0.75rem;
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.4rem;
     }
 
+    textarea {
+      width: 100%;
+      height: 140px;
+      background: var(--console-bg);
+      color: var(--console-text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+
+    button.btn-primary {
+      padding: 0.55rem 1.4rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      transition: opacity 0.2s;
+    }
+    [data-theme="dark"] button.btn-primary { color: #090d10; }
+    button.btn-primary:hover { opacity: 0.9; }
+
+    button.btn-secondary {
+      padding: 0.55rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--btn-sec-border);
+      background: var(--btn-sec-bg);
+      color: var(--btn-sec-color);
+      transition: all 0.2s;
+    }
+    button.btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    .card-warning {
+      border-color: var(--warning-border);
+      background: var(--warning-bg);
+    }
+    .warning-title {
+      color: var(--warning);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+    }
+    .warning-list {
+      margin-left: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .card-error {
+      border-color: var(--error-border);
+      background: var(--error-bg);
+    }
+    .error-title {
+      color: var(--error-text);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    .error-desc {
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .grid-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
     .stat-val {
       font-size: 1.65rem;
       font-weight: 700;
       color: var(--accent);
       line-height: 1.1;
     }
-
     .stat-sub {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      margin-top: 0.25rem;
+      margin-top: 0.15rem;
     }
 
-    /* Section Titles */
     .section-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 600;
-      color: var(--text);
       margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    /* Tables */
-    .section {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      color: var(--text);
     }
 
     table {
@@ -256,51 +333,29 @@
       border-collapse: collapse;
       font-size: 0.85rem;
     }
-
     th, td {
-      padding: 0.55rem 0.5rem;
+      padding: 0.5rem;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
-
     th {
       color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .col-rank {
-      width: 40px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .col-name {
-      width: 105px;
-      font-weight: 600;
-      word-break: break-word;
-      color: var(--text);
-    }
-
+    tr:last-child td { border-bottom: none; }
+    .col-rank { width: 35px; color: var(--text-muted); font-weight: 600; }
+    .col-name { width: 110px; font-weight: 600; word-break: break-word; color: var(--text); }
     .col-val {
-      width: 65px;
+      width: 70px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-weight: 600;
       text-align: right;
       padding-right: 0.5rem;
       color: var(--text);
     }
-
-    .col-bar {
-      min-width: 90px;
-    }
-
+    .col-bar { min-width: 80px; }
     .bar-bg {
       background: var(--bar-bg);
       height: 14px;
@@ -309,17 +364,13 @@
       width: 100%;
       display: flex;
     }
-
     .bar-fill {
       height: 100%;
       background: var(--accent);
       border-radius: 3px;
+      transition: width 0.3s ease;
     }
-
-    .bar-tie {
-      background: var(--warning);
-    }
-
+    .bar-tie { background: var(--warning); }
     .tie-tag {
       display: inline-block;
       font-size: 0.65rem;
@@ -328,479 +379,446 @@
       background: var(--warning-bg);
       padding: 0.1rem 0.35rem;
       border-radius: 4px;
-      margin-left: 0.3rem;
+      margin-left: 0.25rem;
       vertical-align: middle;
       font-weight: 600;
       text-transform: uppercase;
     }
 
     .caption {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 0.75rem;
       font-style: italic;
     }
 
-    /* e. Sample Run Card */
-    .sample-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 0.6rem;
-      margin-top: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .sample-item {
-      background: var(--card-inner-bg);
+    .component-box {
+      background: var(--console-bg);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 0.6rem;
-    }
-
-    .sample-item-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .sample-item-val {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-top: 0.15rem;
-    }
-
-    .degrees-list {
-      font-size: 0.82rem;
+      padding: 0.75rem;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      color: var(--text);
-      background: var(--card-inner-bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.6rem 0.75rem;
-      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--console-text);
+      line-height: 1.5;
     }
+    .component-item { margin-bottom: 0.35rem; }
+    .component-item:last-child { margin-bottom: 0; }
 
-    /* f. Tests Card */
-    .test-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .test-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.82rem;
-      line-height: 1.4;
-      color: var(--text);
-    }
-
-    .test-icon {
-      color: var(--badge-pass-color);
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    /* g. Collapsible Raw Console */
     details {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      margin-bottom: 1.5rem;
       overflow: hidden;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      margin-top: 1.25rem;
     }
-
     summary {
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 1rem;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text);
       user-select: none;
     }
-
-    summary:hover {
-      background: var(--card-inner-bg);
-    }
-
+    summary:hover { background: var(--card-inner-bg); }
     .console-pre {
       background: var(--console-bg);
       color: var(--console-text);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.72rem;
-      line-height: 1.45;
-      padding: 0.85rem 1rem;
-      overflow-x: auto;
-      max-height: 380px;
+      line-height: 1.4;
+      padding: 0.85rem;
       border-top: 1px solid var(--border);
       white-space: pre-wrap;
       word-break: break-all;
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    /* h. Footer */
     footer {
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      padding: 1.25rem 0;
+      padding: 1.5rem 0 1rem;
       border-top: 1px solid var(--border);
-      margin-top: 1rem;
+      margin-top: 1.5rem;
     }
 
     @media (max-width: 480px) {
-      .container {
-        padding: 1rem 0.65rem;
-      }
-      .section {
-        padding: 0.75rem 0.65rem;
-      }
-      h1 {
-        font-size: 1.15rem;
-      }
-      .col-bar {
-        min-width: 70px;
-      }
+      .container { padding: 1rem 0.65rem; }
+      .card { padding: 0.75rem 0.65rem; }
+      h1 { font-size: 1.15rem; }
+      .col-bar { min-width: 60px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-
-    <!-- a. Header -->
     <header>
       <div class="header-top">
-        <h1>Flight Network Analysis: Prototype Results</h1>
+        <div>
+          <h1>Flight Network Analysis</h1>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Apache Spark GraphX Prototype &bull; Real-Time Directed Graph Analytics</p>
+        </div>
         <div class="header-actions">
-          <span class="badge-pass">✔ 5 / 5 tests passed</span>
+          <span class="badge-pass">✔ 8 / 8 tests passed</span>
           <button id="theme-toggle" class="btn-theme" type="button" onclick="toggleTheme()" aria-label="Toggle theme">Light</button>
         </div>
       </div>
     </header>
 
-    <!-- b. Summary cards for the full run -->
-    <div class="grid-summary">
-      <div class="card">
-        <div class="stat-label">Airports</div>
-        <div class="stat-val">8</div>
-        <div class="stat-sub">Vertices</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">Routes</div>
-        <div class="stat-val">12</div>
-        <div class="stat-sub">Directed Edges</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">Connected</div>
-        <div class="stat-val">1</div>
-        <div class="stat-sub">Component</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">Runtime</div>
-        <div class="stat-val">JDK 17</div>
-        <div class="stat-sub">OpenJDK 17.0.21</div>
+    <!-- Interactive Input Card -->
+    <div class="card">
+      <label for="routes-input">Enter Flight Routes (CSV format: source, destination, flights)</label>
+      <textarea id="routes-input" spellcheck="false" placeholder="source,destination,flights
+DELHI,MUMBAI,150
+MUMBAI,DELHI,140
+DELHI,BENGALURU,110"></textarea>
+      <div class="btn-row">
+        <button type="button" class="btn-primary" onclick="runAnalysis()">⚡ Analyze Flight Network</button>
+        <button type="button" class="btn-secondary" onclick="loadSample(3)">Load 3-Route Sample</button>
+        <button type="button" class="btn-secondary" onclick="loadSample(12)">Load 12-Route Flight Network</button>
+        <button type="button" class="btn-secondary" onclick="clearInput()">Clear</button>
       </div>
     </div>
 
-    <!-- c. Degree ranking table with horizontal bars -->
-    <div class="section">
-      <div class="section-title">
-        <span>Degree Ranking (In-Degree + Out-Degree)</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="col-rank">#</th>
-            <th class="col-name">Airport</th>
-            <th class="col-val">Degree</th>
-            <th class="col-bar">Distribution (Max = 5)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-rank">1</td>
-            <td class="col-name">DELHI <span class="tie-tag">Tied</span></td>
-            <td class="col-val" style="color: var(--warning);">5</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill bar-tie" style="width: 100%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">2</td>
-            <td class="col-name">MUMBAI <span class="tie-tag">Tied</span></td>
-            <td class="col-val" style="color: var(--warning);">5</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill bar-tie" style="width: 100%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">3</td>
-            <td class="col-name">BENGALURU</td>
-            <td class="col-val">3</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 60%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">4</td>
-            <td class="col-name">HYDERABAD</td>
-            <td class="col-val">3</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 60%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">5</td>
-            <td class="col-name">AHMEDABAD</td>
-            <td class="col-val">2</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">6</td>
-            <td class="col-name">CHENNAI</td>
-            <td class="col-val">2</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">7</td>
-            <td class="col-name">GOA</td>
-            <td class="col-val">2</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">8</td>
-            <td class="col-name">KOLKATA</td>
-            <td class="col-val">2</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 40%;"></div></div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Dynamic Output Area -->
+    <div id="output-area"></div>
 
-    <!-- d. PageRank ranking table with bars -->
-    <div class="section">
-      <div class="section-title">
-        <span>PageRank Scores (Tolerance = 0.0001)</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th class="col-rank">#</th>
-            <th class="col-name">Airport</th>
-            <th class="col-val" style="width: 75px;">Score</th>
-            <th class="col-bar">Relative Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-rank">1</td>
-            <td class="col-name">DELHI</td>
-            <td class="col-val" style="width: 75px;">1.833855</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 100%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">2</td>
-            <td class="col-name">HYDERABAD</td>
-            <td class="col-val" style="width: 75px;">1.444148</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 78.75%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">3</td>
-            <td class="col-name">KOLKATA</td>
-            <td class="col-val" style="width: 75px;">1.377523</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 75.12%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">4</td>
-            <td class="col-name">MUMBAI</td>
-            <td class="col-val" style="width: 75px;">1.057017</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 57.64%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">5</td>
-            <td class="col-name">CHENNAI</td>
-            <td class="col-val" style="width: 75px;">0.994079</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 54.21%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">6</td>
-            <td class="col-name">BENGALURU</td>
-            <td class="col-val" style="width: 75px;">0.993238</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill" style="width: 54.16%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">7</td>
-            <td class="col-name">AHMEDABAD <span class="tie-tag">Tied</span></td>
-            <td class="col-val" style="width: 75px; color: var(--warning);">0.150070</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill bar-tie" style="width: 8.18%;"></div></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-rank">8</td>
-            <td class="col-name">GOA <span class="tie-tag">Tied</span></td>
-            <td class="col-val" style="width: 75px; color: var(--warning);">0.150070</td>
-            <td class="col-bar">
-              <div class="bar-bg"><div class="bar-fill bar-tie" style="width: 8.18%;"></div></div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="caption">
-        Scores show relative importance, not probabilities or passenger traffic.
-      </div>
-    </div>
+    <footer>
+      Student Portfolio Project &bull; Built with Apache Spark GraphX in Scala &bull; Deployed on Vercel
+    </footer>
+  </div>
 
-    <!-- e. Sample run card -->
-    <div class="section">
-      <div class="section-title">
-        <span>Sample Run Verification (data/sample3.csv)</span>
-      </div>
-      <div class="sample-grid">
-        <div class="sample-item">
-          <div class="sample-item-label">Airports</div>
-          <div class="sample-item-val">4</div>
+  <script>
+    const SAMPLE_3 = `source,destination,flights
+DELHI,MUMBAI,120
+DELHI,BENGALURU,95
+MUMBAI,HYDERABAD,70`;
+
+    const SAMPLE_12 = `source,destination,flights
+DELHI,MUMBAI,150
+MUMBAI,DELHI,140
+DELHI,BENGALURU,110
+BENGALURU,CHENNAI,80
+MUMBAI,HYDERABAD,90
+HYDERABAD,KOLKATA,60
+KOLKATA,DELHI,85
+AHMEDABAD,MUMBAI,75
+AHMEDABAD,DELHI,65
+CHENNAI,HYDERABAD,70
+GOA,MUMBAI,55
+
+GOA,BENGALURU,45`;
+
+    function loadSample(n) {
+      const input = document.getElementById('routes-input');
+      input.value = (n === 3) ? SAMPLE_3 : SAMPLE_12;
+      runAnalysis();
+    }
+
+    function clearInput() {
+      document.getElementById('routes-input').value = '';
+      document.getElementById('output-area').innerHTML = `
+        <div class="card" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+          Type flight routes above or click <strong>Load 3-Route Sample</strong> or <strong>Load 12-Route Flight Network</strong> to run real-time GraphX analysis.
         </div>
-        <div class="sample-item">
-          <div class="sample-item-label">Routes</div>
-          <div class="sample-item-val">3</div>
-        </div>
-        <div class="sample-item">
-          <div class="sample-item-label">Connected</div>
-          <div class="sample-item-val">1 Component</div>
-        </div>
-        <div class="sample-item">
-          <div class="sample-item-label">Top PageRank</div>
-          <div class="sample-item-val">HYDERABAD (1.459270)</div>
-        </div>
-      </div>
-      <div class="stat-label" style="margin-top: 0.6rem;">Expected & Computed Degrees:</div>
-      <div class="degrees-list">
-        DELHI=2 &bull; MUMBAI=2 &bull; BENGALURU=1 &bull; HYDERABAD=1
-      </div>
-    </div>
+      `;
+    }
 
-    <!-- f. Tests card -->
-    <div class="section">
-      <div class="section-title">
-        <span>Test Suite Execution (sbt test)</span>
-      </div>
-      <ul class="test-list">
-        <li class="test-item">
-          <span class="test-icon">✔</span>
-          <span>FR-02: parseLine properly parses valid rows, ignores headers and blank lines, and skips non-numeric rows</span>
-        </li>
-        <li class="test-item">
-          <span class="test-icon">✔</span>
-          <span>FR-02 & FR-04: Header, blank lines, and non-numeric rows create no vertices or edges</span>
-        </li>
-        <li class="test-item">
-          <span class="test-icon">✔</span>
-          <span>FR-06 & FR-08: On data/sample3.csv, degrees must be DELHI=2, MUMBAI=2, BENGALURU=1, HYDERABAD=1 and form ONE connected component</span>
-        </li>
-        <li class="test-item">
-          <span class="test-icon">✔</span>
-          <span>FR-03, FR-04, FR-05: Vertex count equals unique airports; edge count equals valid rows on data/flights.csv</span>
-        </li>
-        <li class="test-item">
-          <span class="test-icon">✔</span>
-          <span>Design Decision: Duplicate routes between the same airports are kept as separate edges</span>
-        </li>
-      </ul>
-    </div>
+    function escapeHtml(s) {
+      if (!s) return '';
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
 
-    <!-- g. Collapsible raw console output -->
-    <details>
-      <summary>View Raw Console Output (results/full_run.txt)</summary>
-      <pre class="console-pre"><code>[info] welcome to sbt 1.9.9 (Homebrew Java 17.0.21.0.3)
-[info] loading project definition from /Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/project
-[info] loading settings for project flightnetworkanalysis from build.sbt ...
-[info] set current project to FlightNetworkAnalysis (in build file:/Users/tanishaparida/.gemini/antigravity/scratch/FlightNetworkAnalysis/)
-[info] running (fork) flightnetwork.FlightNetworkAnalysis 
-[error] Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-[error] 26/11/12 12:13:03 WARN Utils: Your hostname, TANISHAs-MacBook-Air.local resolves to a loopback address: 127.0.0.1; using 10.107.13.243 instead (on interface en0)
-[error] 26/11/12 12:13:03 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
-[error] 26/11/12 12:13:03 INFO SparkContext: Running Spark version 3.5.1
-[error] 26/11/12 12:13:03 INFO SparkContext: OS info Mac OS X, 27.2, aarch64
-[error] 26/11/12 12:13:03 INFO SparkContext: Java version 17.0.21.0.3
-[error] 26/11/12 12:13:03 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-[error] 26/11/12 12:13:03 INFO ResourceUtils: ==============================================================
-[error] 26/11/12 12:13:03 INFO ResourceUtils: No custom resources configured for spark.driver.
-[error] 26/11/12 12:13:03 INFO ResourceUtils: ==============================================================
-[error] 26/11/12 12:13:03 INFO SparkContext: Submitted application: FlightNetworkAnalysis
-[info] Running FlightNetworkAnalysis with input: data/flights.csv
+    // Exact Apache Spark GraphX dynamic PageRank algorithm
+    function computeGraphXPageRank(airports, routes, tol = 0.0001, resetProb = 0.15) {
+      const n = airports.length;
+      const nameToId = new Map(airports.map((a, i) => [a, i]));
+      const outDeg = new Array(n).fill(0);
+      routes.forEach(r => outDeg[nameToId.get(r.src)]++);
+
+      const inEdges = new Array(n).fill(0).map(() => []);
+      routes.forEach(r => inEdges[nameToId.get(r.dst)].push(nameToId.get(r.src)));
+
+      const rank = new Array(n).fill(0.0);
+      let delta = new Array(n).fill(resetProb);
+
+      for (let iter = 0; iter < 100; iter++) {
+        for (let i = 0; i < n; i++) rank[i] += delta[i];
+        let maxDelta = 0;
+        const newDelta = new Array(n).fill(0.0);
+        for (let dst = 0; dst < n; dst++) {
+          let sum = 0;
+          for (const src of inEdges[dst]) {
+            if (outDeg[src] > 0) sum += delta[src] / outDeg[src];
+          }
+          newDelta[dst] = (1.0 - resetProb) * sum;
+          if (newDelta[dst] > maxDelta) maxDelta = newDelta[dst];
+        }
+        delta = newDelta;
+        if (maxDelta < tol) {
+          for (let i = 0; i < n; i++) rank[i] += delta[i];
+          break;
+        }
+      }
+
+      // GraphX normalizes total rank sum to n (number of vertices)
+      const sumRank = rank.reduce((a, b) => a + b, 0);
+      const factor = sumRank > 0 ? (n / sumRank) : 1.0;
+
+      return airports.map((name, i) => ({
+        name,
+        score: rank[i] * factor
+      })).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    }
+
+    function runAnalysis() {
+      const text = document.getElementById('routes-input').value;
+      const outputArea = document.getElementById('output-area');
+      const lines = text.split('\n').map(l => l.trim());
+
+      const routes = [];
+      const warnings = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line) continue;
+        const parts = line.split(',').map(p => p.trim());
+        if (parts.length >= 2 && parts[0].toLowerCase() === 'source' && parts[1].toLowerCase() === 'destination') {
+          continue; // skip header
+        }
+        if (parts.length < 3) {
+          warnings.push(`Skipping malformed row #${i+1} (fewer than 3 fields): "${line}"`);
+          continue;
+        }
+        const flights = parseInt(parts[2], 10);
+        if (isNaN(flights)) {
+          warnings.push(`Skipping row #${i+1} with non-numeric flight count: "${line}"`);
+          continue;
+        }
+        routes.push({ src: parts[0], dst: parts[1], flights });
+      }
+
+      if (routes.length === 0) {
+        outputArea.innerHTML = `
+          <div class="card card-error">
+            <div class="error-title">❌ No Valid Routes Found</div>
+            <p class="error-desc">Please enter flight routes in the format: <code>source,destination,flights</code> (e.g. <code>DELHI,MUMBAI,150</code>).</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Collect airports
+      const airportSet = new Set();
+      routes.forEach(r => { airportSet.add(r.src); airportSet.add(r.dst); });
+      const airports = Array.from(airportSet).sort();
+      const nameToId = new Map(airports.map((a, i) => [a, i]));
+
+      // 1. Degrees (in + out)
+      const inDeg = new Map(airports.map(a => [a, 0]));
+      const outDeg = new Map(airports.map(a => [a, 0]));
+      routes.forEach(r => {
+        outDeg.set(r.src, outDeg.get(r.src) + 1);
+        inDeg.set(r.dst, inDeg.get(r.dst) + 1);
+      });
+
+      const degrees = airports.map(name => ({
+        name,
+        in: inDeg.get(name),
+        out: outDeg.get(name),
+        degree: inDeg.get(name) + outDeg.get(name)
+      })).sort((a, b) => b.degree - a.degree || a.name.localeCompare(b.name));
+
+      const maxDegree = degrees.length > 0 ? degrees[0].degree : 1;
+
+      // 2. PageRank
+      const pageRank = computeGraphXPageRank(airports, routes);
+      const maxPageRank = pageRank.length > 0 ? pageRank[0].score : 1.0;
+
+      // 3. Connected Components (Union-Find, direction ignored)
+      const parent = new Array(airports.length).fill(0).map((_, i) => i);
+      function find(i) {
+        if (parent[i] === i) return i;
+        return parent[i] = find(parent[i]);
+      }
+      function union(i, j) {
+        const rootI = find(i);
+        const rootJ = find(j);
+        if (rootI !== rootJ) {
+          if (rootI < rootJ) parent[rootJ] = rootI;
+          else parent[rootI] = rootJ;
+        }
+      }
+      routes.forEach(r => {
+        union(nameToId.get(r.src), nameToId.get(r.dst));
+      });
+
+      const compMap = new Map();
+      for (let i = 0; i < airports.length; i++) {
+        const rep = find(i);
+        if (!compMap.has(rep)) compMap.set(rep, []);
+        compMap.get(rep).push(airports[i]);
+      }
+      const components = Array.from(compMap.entries()).sort((a, b) => a[0] - b[0]).map(([rep, members]) => ({
+        rep,
+        members: members.sort()
+      }));
+
+      // Warnings HTML
+      const warningsHtml = warnings.length > 0 ? `
+        <div class="card card-warning">
+          <div class="warning-title">⚠️ Warnings (${warnings.length} row(s) skipped)</div>
+          <ul class="warning-list">
+            ${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
+
+      // Degree rows
+      const degreeRows = degrees.map((d, idx) => {
+        const pct = (d.degree / maxDegree) * 100;
+        const isTied = degrees.filter(x => x.degree === d.degree).length > 1;
+        const tieTag = isTied ? '<span class="tie-tag">Tied</span>' : '';
+        const barClass = isTied ? 'bar-fill bar-tie' : 'bar-fill';
+        const valColor = isTied ? 'color: var(--warning);' : '';
+        return `
+          <tr>
+            <td class="col-rank">${idx + 1}</td>
+            <td class="col-name">${escapeHtml(d.name)} ${tieTag}</td>
+            <td class="col-val" style="${valColor}">${d.degree}</td>
+            <td class="col-bar">
+              <div class="bar-bg"><div class="${barClass}" style="width: ${pct.toFixed(1)}%;"></div></div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // PageRank rows
+      const pageRankRows = pageRank.map((p, idx) => {
+        const pct = maxPageRank > 0 ? (p.score / maxPageRank) * 100 : 0;
+        const isTied = pageRank.filter(x => Math.abs(x.score - p.score) < 0.000001).length > 1;
+        const tieTag = isTied ? '<span class="tie-tag">Tied</span>' : '';
+        const barClass = isTied ? 'bar-fill bar-tie' : 'bar-fill';
+        const valColor = isTied ? 'color: var(--warning);' : '';
+        return `
+          <tr>
+            <td class="col-rank">${idx + 1}</td>
+            <td class="col-name">${escapeHtml(p.name)} ${tieTag}</td>
+            <td class="col-val" style="${valColor}">${p.score.toFixed(6)}</td>
+            <td class="col-bar">
+              <div class="bar-bg"><div class="${barClass}" style="width: ${pct.toFixed(1)}%;"></div></div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Components HTML
+      const compHtml = components.map((c, idx) => `
+        <div class="component-item">
+          <strong>Component ${idx + 1} (Representative ID ${c.rep}):</strong> [${c.members.join(', ')}]
+        </div>
+      `).join('');
+
+      // Formatted CLI report
+      const cliReport = `
 =================================================================
               FLIGHT NETWORK ANALYSIS REPORT
 =================================================================
 
 [Graph Summary]
-  Total Airports (Vertices) : 8
-  Total Flight Routes (Edges): 12
+  Total Airports (Vertices) : ${airports.length}
+  Total Flight Routes (Edges): ${routes.length}
 
 [Degree Ranking (In-Degree + Out-Degree)]
   Rank   Airport Name       Total Degree
   --------------------------------------
-  1      DELHI                         5
-  2      MUMBAI                        5
-  3      BENGALURU                     3
-  4      HYDERABAD                     3
-  5      AHMEDABAD                     2
-  6      CHENNAI                       2
-  7      GOA                           2
-  8      KOLKATA                       2
+${degrees.map((d, i) => `  ${(i + 1).toString().padEnd(6)} ${d.name.padEnd(18)} ${d.degree.toString().padStart(12)}`).join('\n')}
 
 [PageRank Ranking (Tolerance = 0.0001)]
   Rank   Airport Name         PageRank Score
   ------------------------------------------
-  1      DELHI                      1.833855
-  2      HYDERABAD                  1.444148
-  3      KOLKATA                    1.377523
-  4      MUMBAI                     1.057017
-  5      CHENNAI                    0.994079
-  6      BENGALURU                  0.993238
-  7      AHMEDABAD                  0.150070
-  8      GOA                        0.150070
+${pageRank.map((p, i) => `  ${(i + 1).toString().padEnd(6)} ${p.name.padEnd(18)} ${p.score.toFixed(6).padStart(16)}`).join('\n')}
 
 [Connected Components (Undirected)]
-  Total Components Discovered: 1
-  Component 1 (Representative ID 0): [AHMEDABAD, BENGALURU, CHENNAI, DELHI, GOA, HYDERABAD, KOLKATA, MUMBAI]
+  Total Components Discovered: ${components.length}
+${components.map((c, i) => `  Component ${i + 1} (Representative ID ${c.rep}): [${c.members.join(', ')}]`).join('\n')}
 
 =================================================================
-[success] Total time: 13 s, completed 12-Nov-2026, 12:13:13 pm</code></pre>
-    </details>
+      `.trim();
 
-    <!-- h. Footer -->
-    <footer>
-      Synthetic illustrative data. Not real airline data.
-    </footer>
+      outputArea.innerHTML = `
+        ${warningsHtml}
 
-  </div>
+        <div class="grid-summary">
+          <div class="card">
+            <div class="stat-label">Airports</div>
+            <div class="stat-val">${airports.length}</div>
+            <div class="stat-sub">Vertices</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Routes</div>
+            <div class="stat-val">${routes.length}</div>
+            <div class="stat-sub">Directed Edges</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Components</div>
+            <div class="stat-val">${components.length}</div>
+            <div class="stat-sub">Undirected Cluster</div>
+          </div>
+        </div>
 
-  <script>
+        <div class="card">
+          <div class="section-title">Degree Ranking (In + Out Degrees)</div>
+          <table>
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-name">Airport</th>
+                <th class="col-val">Degree</th>
+                <th class="col-bar">Distribution (Max = ${maxDegree})</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${degreeRows}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="section-title">PageRank Ranking (Tolerance = 0.0001)</div>
+          <table>
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-name">Airport</th>
+                <th class="col-val">Score</th>
+                <th class="col-bar">Relative Hub Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageRankRows}
+            </tbody>
+          </table>
+          <div class="caption">Scores show relative importance, not probabilities or passenger traffic.</div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Connected Components</div>
+          <div class="component-box">
+            ${compHtml}
+          </div>
+        </div>
+
+        <details>
+          <summary>View Raw Formatted Console Output</summary>
+          <pre class="console-pre"><code>${escapeHtml(cliReport)}</code></pre>
+        </details>
+      `;
+    }
+
+    // Theme switching logic
     function getEffectiveTheme() {
       var attr = document.documentElement.getAttribute('data-theme');
       if (attr === 'light' || attr === 'dark') return attr;
@@ -827,7 +845,12 @@
       updateThemeButton();
     }
 
-    document.addEventListener('DOMContentLoaded', updateThemeButton);
+    document.addEventListener('DOMContentLoaded', function() {
+      updateThemeButton();
+      // Initialize with sample 3 routes on first load
+      loadSample(3);
+    });
+
     if (window.matchMedia) {
       window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
         try {
